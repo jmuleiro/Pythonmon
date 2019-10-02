@@ -32,6 +32,24 @@ class Type:
         else:
             return -1
 
+    def writeJSON(self, j): # Guarda el archivo JSON de Types
+        try:
+            file = open("pokemon-project/json/types.json", "w")
+            file.write(j)
+            file.close()
+            return 1
+        except:
+            return -1
+
+    def readJSON(self): # Lee y retorna el archivo JSON de Types
+        try:
+            file = open("pokemon-project/json/types.json", "r")
+            j = file.read(len(file))
+            file.close()
+            return j
+        except:
+            return -1
+
     def isWeakAgainst(self, name, j):  # Devuelve True si encuentra al parámetro enviado en los tipos contra los que es débil
         typeJ = self.getFromJSON(name, j)
         if (typeJ in self.weakAgainst):

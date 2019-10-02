@@ -1,6 +1,6 @@
-import Type
-import Attack
 import json
+import Attack
+import Type
 
 class Pokemon:
     # Clase principal de Pokémones.
@@ -35,6 +35,36 @@ class Pokemon:
         except:
             return -1
     
-    def getFromJSON(self, name, j):
+    def getFromJSON(self, name, j): # Recibe el nombre y JSON de Pkmn. Devuelve el objeto de la clase
         p = Pokemon(None, None, None, None, None, None, None, None)
-        
+        for pkmn in j["Pokemon"]:
+            p.name = pkmn["name"]
+            p.descr = pkmn["descr"]
+            p.type1 = pkmn["type1"].name
+            p.type2 = pkmn["type2"].name
+            p.lvl = pkmn["lvl"]
+            p.atk = pkmn["atk"]
+            p.df = pkmn["df"]
+            p.hp = pkmn["hp"]
+        if p.name != None:
+            return p
+        else:
+            return -1
+    
+    def writeJSON(self, j): # Guarda el archivo JSON de Pkmn
+        try:
+            file = open("pokemon-project/json/pkmn.json", "w")
+            file.write(j)
+            file.close()
+            return 1
+        except:
+            return -1
+
+    def readJSON(self): # Lee y retorna el archivo JSON de Pkmn
+        try:
+            file = open("pokemon-project/json/pkmn.json", "r")
+            j = file.read(len(file))
+            file.close()
+            return j
+        except:
+            return -1
