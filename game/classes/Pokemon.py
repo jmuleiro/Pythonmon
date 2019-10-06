@@ -44,10 +44,17 @@ class Pokemon:
         self.ivdf = random.randint(0,31)
         self.ivhp = random.randint(0,31)
     
-    def getCaught(self): # Falta parám "pokeball" para el rate
-        pass
+    def getCaught(self): # Falta parám "pokeball" para el rate y status condition
+        x = max(((3 * self.totalHP - 2 * self.currentHP) / (3 * self.totalHP)), 1) # catch rate
+        r = random.randint(1, 255)
+        if x > 255:
+            x = 255
+        if x == r:
+            return True
+        else:
+            return False        
 
-    def randomize(self, j, path): # Randomizar según el nombre
+    def randomize(self, j, path): # Randomizar según el nombre. Falta criterio de cálculo de nivel
         j = j["Pokemon"]
         r = random.randint(1, len(j))
         self.name = j[r].name
