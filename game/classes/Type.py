@@ -1,11 +1,14 @@
 import json
 
 # Clase de tipos de Pokémon o Ataques.
-class Type:
-    def __init__(self, name, effectiveAgainst, weakAgainst): # Constructor
+class Type: # Path JSON "pokemon-project/json/types.json"
+    def __init__(self, name, path): # Constructor
         self.name = name
-        self.effAgainst = effectiveAgainst
-        self.weakAgainst = weakAgainst
+        j = self.readJSON(path)
+        for t in j["Type"]:
+            if t["name"] == self.name:
+                self.effAgainst = t["effectiveAgainst"]
+                self.weakAgainst = t["weakAgainst"]
 
     def loadJSON(self, ret): # Concatena esta instancia al JSON que se pasa como parámetro
         try:
@@ -20,7 +23,7 @@ class Type:
             return -1
 
     def getFromJSON(self, name, j): # Recibe el nombre y el JSON. Devuelve el Type, si lo encuentra
-        t = Type(None, None, None)
+        t = Type(None, None)
         for typ in j["Type"]:
             if typ["name"] == name:
                 t.name = typ["name"]
@@ -41,12 +44,12 @@ class Type:
         except:
             return -1
 
-    def readJSON(self): # Lee y retorna el archivo JSON de Types
+    def readJSON(self, path): # Lee y retorna el archivo JSON de Types
         try:
-            file = open("pokemon-project/json/types.json", "r")
+            file = open(path, "r")
             j = file.read(len(file))
             file.close()
-            return j
+            return json.loads(j)
         except:
             return -1
 

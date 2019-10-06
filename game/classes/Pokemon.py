@@ -8,14 +8,14 @@ class Pokemon:
     # Clase principal de Pokémones.
     # Para un pokemon nuevo, se debe ejecutar desde el init: 1.randomize 2.calcIVs, 3.normalize
 
-    def __init__(self, name, descr, type1, type2, baseATK, baseDF, baseHP): # Constructor
+    def __init__(self, name, descr, type1, type2, baseATK, baseDF, baseHP, path): # Constructor
         self.name = name
         self.descr = descr
         self.type1 = type1
         self.type2 = type2
         self.lvl = 0 # Nivel entre 0 y 100
         self.ivatk = 0 # ------ Individual Values ------
-        self.ivdf = 0 # 0 <= x =< 15
+        self.ivdf = 0 # 0 <= x =< 31
         self.ivhp = 0 # --------------------------------
         self.currentHP = 0
         self.evATK = 0 # ------ Effort Values ------
@@ -27,20 +27,37 @@ class Pokemon:
         self.totalATK = 0
         self.totalDF = 0
         self.totalHP = 0
+        j = self.readJSON(path)
+        self.randomize(j, "pokemon-project/json/types.json")
+        self.calcIVs()
+        self.normalize(True)
 
-    def normalize(self): # Normalizar y calcular totalHP, totalATK, totalDF, currentHP, etc
-        pass
+    def normalize(self, newPkmn): # Normalizar y calcular totalHP, totalATK, totalDF, currentHP, etc
+        self.totalATK = math.floor(((self.baseATK + self.ivatk) * 2 + (math.sqrt(self.evATK) / 4)) * self.lvl / 100 + 5)
+        self.totalDF = math.floor(((self.baseDF + self.ivdf) * 2 + (math.sqrt(self.ivdf) / 4)) * self.lvl / 100 + 5)
+        self.totalHP = math.floor((((self.baseHP + self.ivhp) * 2 + (math.sqrt(self.evHP) / 4)) * self.lvl / 100 ) + self.lvl + 10)
+        if (newPkmn):
+            self.currentHP = self.totalHP
 
     def calcIVs(self): # Calcular IVS
-        pass
+        self.ivatk = random.randint(0,31)
+        self.ivdf = random.randint(0,31)
+        self.ivhp = random.randint(0,31)
     
     def getCaught(self): # Falta parám "pokeball" para el rate
         pass
 
-    def randomize(self, path): # Randomizar según el nombre, rehacer función
-        j = json.loads(self.readJSON(path))
+    def randomize(self, j, path): # Randomizar según el nombre
+        j = j["Pokemon"]
         r = random.randint(1, len(j))
-        self = j[r]
+        self.name = j[r].name
+        self.descr = j[r].descr
+        self.type1 = Type.Type(j[r].type1, path)
+        self.type2 = Type.Type(j[r].type2, path)
+        self.baseATK = j[r].baseATK
+        self.baseDF = j[r].baseDF
+        self.baseHP = j[r].baseHP
+        self.lvl = random.randint(20, 50) # Temp placeholder value <-----------------------------
 
     def loadJSON(self, ret): # Carga a la variable JSON esta instancia de Pokémon
         try:                 # Re-ver los parámetros que se guardan.
@@ -59,7 +76,7 @@ class Pokemon:
             return -1
     
     def getFromJSON(self, name, j): # Recibe el nombre y JSON de Pkmn. Devuelve el objeto de la clase
-        p = Pokemon(None, None, None, None, None, None, None)
+        p = Pokemon(None, None, None, None, None, None, None, None)
         for pkmn in j["Pokemon"]:
             if pkmn["name"] == name:
                 p.name = pkmn["name"]
@@ -77,7 +94,7 @@ class Pokemon:
     def writeJSON(self, j, path): # Guarda el archivo JSON de Pkmn path: pokemon-project/json/pkmn.json
         try:
             file = open(path, "w")
-            file.write(json.dumps(j))
+            file.write(json.dumps(j)) # cambiar
             file.close()
             return 1
         except:
