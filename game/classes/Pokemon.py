@@ -77,7 +77,7 @@ class Pokemon:
                 "baseDF":"{:1}".format(self.baseDF),
                 "baseHP":"{:1}".format(self.baseHP)
             }
-            ret += json.loads(x)
+            ret += json.dumps(x)
             return ret
         except:
             return -1

@@ -1,0 +1,11 @@
+{
+    "createh": "Sintaxis correcta: /create <item> \npokemon, type, pokeball, attack.",
+    "createerror": "Error, parámetros no válidos. Intente /create help",
+    "pkmnname": "Ingrese el nombre del Pokémon.",
+    "pkmndescr": "Ingrese la descripción del Pokémon.",
+    "pkmntype1": "Ingrese el tipo 1 de Pokémon.",
+    "pkmntype2": "Ingrese el tipo 2 del Pokémon si aplica.",
+    "pkmnbaseatk": "Ingrese el ataque base del Pokémon.",
+    "pkmnbasedf": "Ingrese la defensa base del Pokémon.",
+    "pkmnbasehp": "Ingrese los Health Points base del Pokémon."
+}
