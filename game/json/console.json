@@ -1,4 +1,7 @@
 {
+    "saveh": "Sintaxis correcta: /save <item> \npokemon, type, pokeball, attack.",
+    "saveerror": "Error, parámetros no válidos. Intente /save help",
+    "saveerror2": "Error, no se asignó un/a {:1} para guardar.",
     "createh": "Sintaxis correcta: /create <item> \npokemon, type, pokeball, attack.",
     "createerror": "Error, parámetros no válidos. Intente /create help",
     "pkmnname": "Ingrese el nombre del Pokémon.",
@@ -7,5 +10,7 @@
     "pkmntype2": "Ingrese el tipo 2 del Pokémon si aplica.",
     "pkmnbaseatk": "Ingrese el ataque base del Pokémon.",
     "pkmnbasedf": "Ingrese la defensa base del Pokémon.",
-    "pkmnbasehp": "Ingrese los Health Points base del Pokémon."
+    "pkmnbasehp": "Ingrese los Health Points base del Pokémon.",
+    "pkmndexnbr": "Ingrese el N° de Pokédex Nacional del Pokémon."
+
 }

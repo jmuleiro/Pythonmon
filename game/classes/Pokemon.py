@@ -1,6 +1,7 @@
 import json
 import random
 import math
+import os.path
 import Attack
 import Type
 
@@ -8,7 +9,7 @@ class Pokemon:
     # Clase principal de Pokémones.
     # Para un pokemon nuevo, se debe ejecutar desde el init: 1.randomize 2.calcIVs, 3.normalize
 
-    def __init__(self, name, descr, type1, type2, baseATK, baseDF, baseHP, path): # Constructor
+    def __init__(self, name, descr, type1, type2, baseATK, baseDF, baseHP, dexnbr, path, doCalcs): # Constructor
         self.name = name
         self.descr = descr
         self.type1 = type1
@@ -24,13 +25,15 @@ class Pokemon:
         self.baseATK = baseATK
         self.baseDF = baseDF
         self.baseHP = baseHP
+        self.dexnbr = dexnbr
         self.totalATK = 0
         self.totalDF = 0
         self.totalHP = 0
-        j = self.readJSON(path)
-        self.randomize(j, "pokemon-project/json/types.json")
-        self.calcIVs()
-        self.normalize(True)
+        if doCalcs:
+            j = readJSON(path)
+            self.randomize(j, "pokemon-project/json/types.json")
+            self.calcIVs()
+            self.normalize(True)
 
     def normalize(self, newPkmn): # Normalizar y calcular totalHP, totalATK, totalDF, currentHP, etc
         self.totalATK = math.floor(((self.baseATK + self.ivatk) * 2 + (math.sqrt(self.evATK) / 4)) * self.lvl / 100 + 5)
@@ -68,22 +71,20 @@ class Pokemon:
 
     def loadJSON(self, ret): # Carga a la variable JSON esta instancia de Pokémon
         try:                 # Re-ver los parámetros que se guardan.
-            x = {
-                "name":"{:1}".format(self.name),
+            x = {"{:1}".format(self.name):{
                 "descr":"{:1}".format(self.descr),
-                "type1":"{:1}".format(self.type1.name),
-                "type2":"{:1}".format(self.type2.name),
+                "type1":"{:1}".format(self.type1),
+                "type2":"{:1}".format(self.type2),
                 "baseATK":"{:1}".format(self.baseATK),
                 "baseDF":"{:1}".format(self.baseDF),
                 "baseHP":"{:1}".format(self.baseHP)
-            }
-            ret += json.dumps(x)
-            return ret
+            }}
+            return x
         except:
             return -1
     
     def getFromJSON(self, name, j): # Recibe el nombre y JSON de Pkmn. Devuelve el objeto de la clase
-        p = Pokemon(None, None, None, None, None, None, None, None)
+        p = Pokemon(None, None, None, None, None, None, None, None, None, None)
         for pkmn in j["Pokemon"]:
             if pkmn["name"] == name:
                 p.name = pkmn["name"]
@@ -98,21 +99,31 @@ class Pokemon:
         else:
             return -1
     
-    def writeJSON(self, j, path): # Guarda el archivo JSON de Pkmn path: pokemon-project/json/pkmn.json
-        try:
-            file = open(path, "w")
-            file.write(json.dumps(j)) # cambiar
-            file.close()
-            return 1
-        except:
-            return -1
+def writeJSON(j, path): # Guarda el archivo JSON de Pkmn path: pokemon-project/json/pkmn.json
+    if os.path.exists(path):
+        file = open(path, "r")
+        jf = ""
+        for i in len(file):
+            jf = json.loads(file.read(i))
+        file.close()
+        j = json.loads(j)
+        jf.update(j)
+        file = open(path, "w")
+        file.writelines(json.dumps(jf))
+        file.close()
+    else:
+        file = open(path, "w")
+        file.writelines(j)
+        file.close()
+    return 1
+    
 
-    def readJSON(self, path): # Lee y retorna el archivo JSON de Pkmn path: pokemon-project/json/pkmn.json
-        try:
-            file = open(path, "r")
-            j = file.read(len(file))
-            file.close()
-            return json.loads(j)
-        except:
-            return -1
+def readJSON(path): # Lee y retorna el archivo JSON de Pkmn path: pokemon-project/json/pkmn.json
+    try:
+        file = open(path, "r")
+        j = file.read(len(file))
+        file.close()
+        return json.loads(j)
+    except:
+        return -1
         
