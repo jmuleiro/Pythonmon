@@ -71,15 +71,28 @@ class Pokemon:
 
     def loadJSON(self, ret): # Carga a la variable JSON esta instancia de Pokémon
         try:                 # Re-ver los parámetros que se guardan.
-            x = {"{:1}".format(self.name):{
+            if ret == {}:
+                ret = {
+                "name":"{:1}".format(self.name),
                 "descr":"{:1}".format(self.descr),
                 "type1":"{:1}".format(self.type1),
                 "type2":"{:1}".format(self.type2),
                 "baseATK":"{:1}".format(self.baseATK),
                 "baseDF":"{:1}".format(self.baseDF),
                 "baseHP":"{:1}".format(self.baseHP)
-            }}
-            return x
+                }
+            else:
+                x = {
+                "name":"{:1}".format(self.name),
+                "descr":"{:1}".format(self.descr),
+                "type1":"{:1}".format(self.type1),
+                "type2":"{:1}".format(self.type2),
+                "baseATK":"{:1}".format(self.baseATK),
+                "baseDF":"{:1}".format(self.baseDF),
+                "baseHP":"{:1}".format(self.baseHP)
+                }
+                ret.update(x)
+            return ret
         except:
             return -1
     
@@ -103,8 +116,7 @@ def writeJSON(j, path): # Guarda el archivo JSON de Pkmn path: pokemon-project/j
     if os.path.exists(path):
         file = open(path, "r")
         jf = ""
-        for i in len(file):
-            jf = json.loads(file.read(i))
+        jf = json.loads(file.read(i))
         file.close()
         j = json.loads(j)
         jf.update(j)

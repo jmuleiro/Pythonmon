@@ -48,7 +48,8 @@ while i != "/close":
         if jpkmn == {}:
             jpkmn = json.dumps(pkmn.loadJSON(jpkmn))
         else:
-            jpkmn.update(json.dumps(pkmn.loadJSON(jpkmn))) 
+            jpkmn += json.dumps(pkmn.loadJSON(jpkmn)) 
+        print(jpkmn)
     elif i == "/create type":
         pass
     elif i == "/create pokeball":
