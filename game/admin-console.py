@@ -45,10 +45,7 @@ while i != "/close":
         print(jtxt["pkmndexnbr"])
         dexnbr = input()
         pkmn = Pokemon.Pokemon(name, descr, type1, type2, baseatk, basedf, basehp, dexnbr, None, False)
-        if jpkmn == {}:
-            jpkmn = json.dumps(pkmn.loadJSON(jpkmn))
-        else:
-            jpkmn += json.dumps(pkmn.loadJSON(jpkmn)) 
+        jpkmn = pkmn.loadJSON(jpkmn)
         print(jpkmn)
     elif i == "/create type":
         pass
@@ -58,6 +55,8 @@ while i != "/close":
         pass
     elif i[0:8] == "/create ":
         print(jtxt["createerror"])
+    elif i[0:7] == "/create":
+        print(jtxt["createerror"])
     elif i == "/save help":
         print(jtxt["saveh"])
     elif i == "/save pokemon":
@@ -66,4 +65,6 @@ while i != "/close":
         else:
             print(Pokemon.writeJSON(jpkmn, path + "/json/pkmn.json"))
     elif i[0:6] == "/save ":
+        print(jtxt["saveerror"])
+    elif i[0:5] == "/save":
         print(jtxt["saveerror"])

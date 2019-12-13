@@ -1,4 +1,5 @@
 import json
+import sys
 import random
 import math
 import os.path
@@ -9,7 +10,7 @@ class Pokemon:
     # Clase principal de Pokémones.
     # Para un pokemon nuevo, se debe ejecutar desde el init: 1.randomize 2.calcIVs, 3.normalize
 
-    def __init__(self, name, descr, type1, type2, baseATK, baseDF, baseHP, dexnbr, path, doCalcs): # Constructor
+    def __init__(self, name = None, descr = None, type1 = None, type2 = None, baseATK = None, baseDF = None, baseHP = None, dexnbr = None, path = None, doCalcs = None): # Constructor
         self.name = name
         self.descr = descr
         self.type1 = type1
@@ -81,6 +82,7 @@ class Pokemon:
                 "baseDF":"{:1}".format(self.baseDF),
                 "baseHP":"{:1}".format(self.baseHP)
                 }
+                ret = json.dumps(ret)
             else:
                 x = {
                 "name":"{:1}".format(self.name),
@@ -91,44 +93,72 @@ class Pokemon:
                 "baseDF":"{:1}".format(self.baseDF),
                 "baseHP":"{:1}".format(self.baseHP)
                 }
-                ret.update(x)
+                ret += json.dumps(x)
+                print("funciono el dump")
             return ret
-        except:
+        except Exception as e:
+            print("Pokemon class loadJSON method Failed:" + str(e) + ", in line {}".format(sys.exc_info()[-1].tb_lineno) + ", exception type: " + str(type(e)))
             return -1
     
     def getFromJSON(self, name, j): # Recibe el nombre y JSON de Pkmn. Devuelve el objeto de la clase
-        p = Pokemon(None, None, None, None, None, None, None, None, None, None)
-        for pkmn in j["Pokemon"]:
-            if pkmn["name"] == name:
-                p.name = pkmn["name"]
-                p.descr = pkmn["descr"]
-                p.type1 = pkmn["type1"].name
-                p.type2 = pkmn["type2"].name
-                p.baseATK = pkmn["baseATK"]
-                p.baseDF = pkmn["baseDF"]
-                p.baseHP = pkmn["baseHP"]
-        if p.name != None:
-            return p
-        else:
+        try:
+            p = Pokemon()
+            js = j.split("}")
+            for pkmn in js:
+                pkmn += "}"
+                pkmn = json.load(json.dumps(pkmn))
+                #print("pkmnname: " + pkmn["name"] + "  name: " + name)
+                if pkmn["name"] == name:
+                    p.name = pkmn["name"]
+                    p.descr = pkmn["descr"]
+                    p.type1 = pkmn["type1"].name
+                    p.type2 = pkmn["type2"].name
+                    p.baseATK = pkmn["baseATK"]
+                    p.baseDF = pkmn["baseDF"]
+                    p.baseHP = pkmn["baseHP"]
+            if p.name != None:
+                return p
+            else:
+                return -1
+        except Exception as e:
+            print("Pokemon class getFromJSON method (name, j) Failed: " + str(e) + ", in line {}".format(sys.exc_info()[-1].tb_lineno) + ", exception type: " + str(type(e)))
             return -1
     
 def writeJSON(j, path): # Guarda el archivo JSON de Pkmn path: pokemon-project/json/pkmn.json
-    if os.path.exists(path):
-        file = open(path, "r")
-        jf = ""
-        jf = json.loads(file.read(i))
-        file.close()
-        j = json.loads(j)
-        jf.update(j)
-        file = open(path, "w")
-        file.writelines(json.dumps(jf))
-        file.close()
-    else:
-        file = open(path, "w")
-        file.writelines(j)
-        file.close()
-    return 1
-    
+    try:
+        if os.path.exists(path):
+            jf = {}
+            with open(path, "r") as file:
+                jf = json.load(file)
+            j = json.loads(j)
+            jf += j
+            
+            with open(path, "w") as file:
+                file.write(json.dumps(jf))
+        else:
+            p = Pokemon()
+            c = 0
+            js = j.split("}")
+            for pkmn in js:
+                pkmn += "}"
+                pkmn = json.loads(pkmn)
+                if c == 0:
+                    print("hasta aca")
+                    p = p.getFromJSON(pkmn["name"], j)
+                    pkmn = "{" + "{:1}".format(p.name) + ":{" + "{:2}".format(p) + "}}"
+                else:
+                    p = p.getFromJSON(pkmn["name"], j)
+                    pkmn[len(pkmn)] = ","
+                    pk2 = {"{:1}".format(p.name):{p}}
+                    pkmn += pk2[1:len(pk2)]
+                c += 1
+            file = open(path, "w")
+            file.write(j)
+            file.close()
+        return 1
+    except Exception as e:
+        print("Pokemon class writeJSON (j, path) method Failed:" + str(e) + ", in line {}".format(sys.exc_info()[-1].tb_lineno) + ", exception type: " + str(type(e)))
+        return -1
 
 def readJSON(path): # Lee y retorna el archivo JSON de Pkmn path: pokemon-project/json/pkmn.json
     try:
@@ -136,6 +166,7 @@ def readJSON(path): # Lee y retorna el archivo JSON de Pkmn path: pokemon-projec
         j = file.read(len(file))
         file.close()
         return json.loads(j)
-    except:
+    except Exception as e:
+        print("readJSON (path) function Failed: " + str(e) + ", in line {}".format(sys.exc_info()[-1].tb_lineno) + ", exception type: " + str(type(e)))
         return -1
         
