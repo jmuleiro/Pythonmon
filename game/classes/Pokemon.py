@@ -106,13 +106,13 @@ class Pokemon:
             js = j.split("}")
             for pkmn in js:
                 pkmn += "}"
-                pkmn = json.load(json.dumps(pkmn))
+                pkmn = json.loads(pkmn)
                 #print("pkmnname: " + pkmn["name"] + "  name: " + name)
                 if pkmn["name"] == name:
                     p.name = pkmn["name"]
                     p.descr = pkmn["descr"]
-                    p.type1 = pkmn["type1"].name
-                    p.type2 = pkmn["type2"].name
+                    p.type1 = pkmn["type1"]
+                    p.type2 = pkmn["type2"]
                     p.baseATK = pkmn["baseATK"]
                     p.baseDF = pkmn["baseDF"]
                     p.baseHP = pkmn["baseHP"]
@@ -141,11 +141,12 @@ def writeJSON(j, path): # Guarda el archivo JSON de Pkmn path: pokemon-project/j
             js = j.split("}")
             for pkmn in js:
                 pkmn += "}"
+                print("pkmn: " + pkmn)
                 pkmn = json.loads(pkmn)
                 if c == 0:
                     print("hasta aca")
                     p = p.getFromJSON(pkmn["name"], j)
-                    pkmn = "{" + "{:1}".format(p.name) + ":{" + "{:2}".format(p) + "}}"
+                    pkmn = "{" + "{:1}".format(p.name) + ":{" + "{:2}".format(p) + "}/}"
                 else:
                     p = p.getFromJSON(pkmn["name"], j)
                     pkmn[len(pkmn)] = ","
